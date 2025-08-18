@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "996132571694",
+    "project_id": "lumeno-app",
+    "storage_bucket": "lumeno-app.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:996132571694:android:50ebb31df9b619aa84adbf",
+        "android_client_info": {
+          "package_name": "com.example.lumeno_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDRbmzN-p5oPnhPnidcJZTdG0Z3a7Booj4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
