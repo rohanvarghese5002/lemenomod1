@@ -1,5 +1,7 @@
 // lib/pages/home_page.dart
 
+import 'cart_page.dart';
+import 'order_history_page.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -16,11 +18,42 @@ class HomePage extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.grey[100],
       appBar: AppBar(
-        title: const Text("LUMENO"),
+        title: const Text(
+          "LUMENO",
+          style: TextStyle(
+            fontFamily: 'Roboto',   // 👈 Replace with your custom font if added
+            fontSize: 24,           // 👈 Bigger font size
+            fontWeight: FontWeight.bold,
+            letterSpacing: 2,       // 👈 Adds spacing between letters
+            color: Colors.white,    // 👈 Ensures it’s visible
+          ),
+        ),
         backgroundColor: Colors.green.shade800,
         actions: [
           IconButton(onPressed: () {}, icon: const Icon(Icons.search)),
           IconButton(onPressed: signOut, icon: const Icon(Icons.logout)),
+
+          // 👇 Cart Button
+          IconButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const CartPage()),
+              );
+            },
+            icon: const Icon(Icons.shopping_cart),
+          ),
+
+          IconButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => const OrderHistoryPage()),
+              );
+            },
+            icon: const Icon(Icons.history),
+          ),
         ],
       ),
       body: SingleChildScrollView(
@@ -40,7 +73,7 @@ class HomePage extends StatelessWidget {
               ),
             ),
 
-            // "Shop by Category" Section
+            // Shop by Category
             const Padding(
               padding: EdgeInsets.symmetric(horizontal: 16.0),
               child: Text(
@@ -65,7 +98,7 @@ class HomePage extends StatelessWidget {
             ),
             const SizedBox(height: 24),
 
-            // "Trending Products" Section Header
+            // Trending Products
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
               child: Row(
@@ -81,9 +114,8 @@ class HomePage extends StatelessWidget {
             ),
             const SizedBox(height: 12),
 
-            // THE CORRECTED 4x2 GRID
+            // Product Grid
             StreamBuilder<QuerySnapshot>(
-              // We limit to 8 to ensure a 4x2 grid
               stream: FirebaseFirestore.instance
                   .collection('products')
                   .limit(8)
@@ -102,10 +134,10 @@ class HomePage extends StatelessWidget {
                   physics: const NeverScrollableScrollPhysics(),
                   padding: const EdgeInsets.symmetric(horizontal: 16.0),
                   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 4, // 4 items per row
+                    crossAxisCount: 4,
                     crossAxisSpacing: 16.0,
                     mainAxisSpacing: 16.0,
-                    childAspectRatio: 1.2, // Taller cards to fill space
+                    childAspectRatio: 1.2,
                   ),
                   itemCount: products.length,
                   itemBuilder: (context, index) {
@@ -124,7 +156,6 @@ class HomePage extends StatelessWidget {
   }
 }
 
-// Category Icon Widget
 class CategoryIcon extends StatelessWidget {
   final IconData icon;
   final String label;
@@ -153,11 +184,29 @@ class CategoryIcon extends StatelessWidget {
   }
 }
 
-// Redesigned, larger Product Card
 class ProductCard extends StatelessWidget {
   final Map<String, dynamic> product;
 
   const ProductCard({super.key, required this.product});
+
+  Future<void> addToCart(BuildContext context) async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(user.uid)
+          .collection('cart')
+          .add(product);
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Product added to cart")),
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("You must be logged in")),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -203,8 +252,7 @@ class ProductCard extends StatelessWidget {
                     radius: 15,
                     child: IconButton(
                       iconSize: 15,
-                      icon:
-                          const Icon(Icons.favorite_border, color: Colors.grey),
+                      icon: const Icon(Icons.favorite_border, color: Colors.grey),
                       onPressed: () {},
                     ),
                   ),
@@ -251,7 +299,7 @@ class ProductCard extends StatelessWidget {
                       ),
                     ),
                     ElevatedButton(
-                      onPressed: () {},
+                      onPressed: () => addToCart(context),
                       style: ElevatedButton.styleFrom(
                         backgroundColor:
                             const Color.fromARGB(255, 236, 230, 230),
