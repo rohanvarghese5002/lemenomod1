@@ -1,16 +1,14 @@
-// lib/main.dart
-
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:lumeno_app/auth_gate.dart'; // Import the new AuthGate
-import 'package:lumeno_app/firebase_options.dart';
+import 'firebase_options.dart';
+import 'pages/auth_gate.dart'; // Make sure this path is correct
 
 void main() async {
+  // These two lines are essential for Firebase to work
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-
   runApp(const MyApp());
 }
 
@@ -19,14 +17,10 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // This is the root of your application
     return MaterialApp(
-      title: 'LUMENO',
-      theme: ThemeData(
-        primarySwatch: Colors.green,
-      ),
-      // CHANGED: The app now starts at the AuthGate
-      home: const AuthGate(),
       debugShowCheckedModeBanner: false,
+      home: AuthGate(), // This is the starting point for your app's UI
     );
   }
 }

@@ -1,10 +1,10 @@
-// lib/pages/home_page.dart
-
-import 'cart_page.dart';
-import 'order_history_page.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+
+import 'cart_page.dart';
+import 'order_history_page.dart';
+import 'profile_page.dart'; // Make sure this import is here
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -21,19 +21,17 @@ class HomePage extends StatelessWidget {
         title: const Text(
           "LUMENO",
           style: TextStyle(
-            fontFamily: 'Roboto',   // 👈 Replace with your custom font if added
-            fontSize: 24,           // 👈 Bigger font size
+            fontFamily: 'Roboto',
+            fontSize: 24,
             fontWeight: FontWeight.bold,
-            letterSpacing: 2,       // 👈 Adds spacing between letters
-            color: Colors.white,    // 👈 Ensures it’s visible
+            letterSpacing: 2,
+            color: Colors.white,
           ),
         ),
         backgroundColor: Colors.green.shade800,
         actions: [
           IconButton(onPressed: () {}, icon: const Icon(Icons.search)),
           IconButton(onPressed: signOut, icon: const Icon(Icons.logout)),
-
-          // 👇 Cart Button
           IconButton(
             onPressed: () {
               Navigator.push(
@@ -43,19 +41,39 @@ class HomePage extends StatelessWidget {
             },
             icon: const Icon(Icons.shopping_cart),
           ),
-
           IconButton(
             onPressed: () {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (context) => const OrderHistoryPage()),
+                  builder: (context) => const OrderHistoryPage(),
+                ),
               );
             },
             icon: const Icon(Icons.history),
           ),
+          Padding(
+            padding: const EdgeInsets.only(right: 10.0),
+            child: GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  // =========================================================
+                  // THE FIX IS HERE: We removed 'const' from ProfilePage()
+                  MaterialPageRoute(builder: (context) => ProfilePage()),
+                  // =========================================================
+                );
+              },
+              child: const CircleAvatar(
+                radius: 20,
+                backgroundImage:
+                    NetworkImage('https://via.placeholder.com/150'),
+              ),
+            ),
+          ),
         ],
       ),
+      // The rest of your body code remains the same...
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -156,6 +174,7 @@ class HomePage extends StatelessWidget {
   }
 }
 
+// CategoryIcon and ProductCard widgets remain the same...
 class CategoryIcon extends StatelessWidget {
   final IconData icon;
   final String label;

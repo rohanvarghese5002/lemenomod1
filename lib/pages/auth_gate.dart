@@ -1,7 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/material.dart'; // THIS LINE IS NOW CORRECT
-import 'package:lumeno_app/pages/home_page.dart';
-import 'package:lumeno_app/pages/welcome_page.dart';
+import 'package:flutter/material.dart';
+import 'auth_wrapper.dart'; // Imports the "traffic cop"
+import 'welcome_page.dart'; // Imports your login screen
 
 class AuthGate extends StatelessWidget {
   const AuthGate({super.key});
@@ -12,14 +12,14 @@ class AuthGate extends StatelessWidget {
       body: StreamBuilder(
         stream: FirebaseAuth.instance.authStateChanges(),
         builder: (context, snapshot) {
-          // 1. Is the user logged in?
+          // If the user is logged in...
           if (snapshot.hasData) {
-            // If yes, show the HomePage
-            return const HomePage();
+            // ...send them to the AuthWrapper to check if they are new.
+            return AuthWrapper();
           }
-          // 2. Is the user NOT logged in?
+          // If the user is NOT logged in...
           else {
-            // If no, show the WelcomePage
+            // ...show the welcome/login screen.
             return const WelcomePage();
           }
         },
